@@ -7,11 +7,31 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity"
     android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <ImageButton
+            android:id="@+id/closeApp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@android:drawable/ic_delete" />
+
+    </LinearLayout>
+
     <TextureView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="14"
         android:id="@+id/texture"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
