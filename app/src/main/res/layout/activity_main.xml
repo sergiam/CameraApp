@@ -47,9 +47,9 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="5dp"
             android:layout_weight="1"
-            android:backgroundTint="#2a9df4"
+            android:backgroundTint="#ABB6BF"
             android:text="Foto"
-            android:textColor="@android:color/white" />
+            android:textColor="@color/black" />
 
         <Button
             android:id="@+id/btnGallery"
@@ -57,9 +57,9 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
             android:layout_weight="1"
-            android:backgroundTint="#2a9df4"
+            android:backgroundTint="#ABB6BF"
             android:text="Galeria"
-            android:textColor="@android:color/white" />
+            android:textColor="@color/black" />
 
     </LinearLayout>
 

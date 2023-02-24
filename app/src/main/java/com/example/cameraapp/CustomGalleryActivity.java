@@ -1,6 +1,10 @@
 package com.example.cameraapp;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,15 +20,26 @@ public class CustomGalleryActivity extends AppCompatActivity {
     private String folderName = "MyPhotoDir";
     ViewPager viewPager;
     ViewPagerAdapter viewPagerAdapter;
+    private ImageButton buttonBack;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
         getFromSdcard();
+        buttonBack = findViewById(R.id.button);
         viewPager = findViewById(R.id.viewPagerMain);
         viewPagerAdapter = new ViewPagerAdapter(this,f);
         viewPager.setAdapter(viewPagerAdapter);
+
+        buttonBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(CustomGalleryActivity.this,MainActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     public void getFromSdcard(){
@@ -34,6 +49,7 @@ public class CustomGalleryActivity extends AppCompatActivity {
             for (int i = 0; i < listFile.length; i++) {
                 f.add(listFile[i].getAbsolutePath());
             }
+            System.out.println("niggerman");
         }
     }
 }

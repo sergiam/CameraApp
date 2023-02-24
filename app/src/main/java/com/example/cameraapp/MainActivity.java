@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.ImageFormat;
 import android.graphics.SurfaceTexture;
@@ -63,6 +64,9 @@ public class MainActivity extends AppCompatActivity {
         ORIENTATIONS.append(Surface.ROTATION_270, 180);
     }
 
+    private File file;
+    private File folder;
+    private final String folderName = "MyPhotoDir";
     private String cameraId;
     protected CameraDevice cameraDevice;
     protected CameraCaptureSession cameraCaptureSessions;
@@ -70,7 +74,6 @@ public class MainActivity extends AppCompatActivity {
     protected CaptureRequest.Builder captureRequestBuilder;
     private Size imageDimension;
     private ImageReader imageReader;
-    private File file;
     private static final int REQUEST_CAMERA_PERMISSION = 200;
     private Handler mBackgroundHandler;
     private HandlerThread mBackgroundThread;
@@ -91,7 +94,8 @@ public class MainActivity extends AppCompatActivity {
         gallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(MainActivity.this,CustomGalleryActivity.class);
+                startActivity(intent);
             }
         });
         closeAppButton.setOnClickListener(new View.OnClickListener() {
@@ -206,11 +210,14 @@ public class MainActivity extends AppCompatActivity {
             //Orientacion
             int rotation = getWindowManager().getDefaultDisplay().getRotation();
             captureBuilder.set(CaptureRequest.JPEG_ORIENTATION, ORIENTATIONS.get(rotation));
-
-            //Nombre de la foto, para que no se repita y se almacene correctamente
-            Date now = new Date();
-            final File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)  + "/"+ new SimpleDateFormat("yyyyMMddHHmmss", Locale.ENGLISH).format(now) + ".jpg");
-            System.out.println(file.getAbsolutePath());
+            file = null;
+            folder = new File(folderName);
+            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+            String imageFileName = "IMG_" + timeStamp + ".jpg";
+            file = new File(getExternalFilesDir(folderName),"/" + imageFileName);
+            if (!folder.exists()){
+                folder.mkdirs();
+            }
             ImageReader.OnImageAvailableListener readerListener = new ImageReader.OnImageAvailableListener() {
                 @Override
                 public void onImageAvailable(ImageReader reader) {
