@@ -351,7 +351,7 @@ public class MainActivity extends AppCompatActivity {
                         if (null != cameraDevice) {
                             cameraDevice.close();
                             textureView.setVisibility(View.INVISIBLE);
-                            MainActivity.this.finish();
+                            MainActivity.this.finishAffinity();
                             System.exit(0);
                             cameraDevice = null;
                         }

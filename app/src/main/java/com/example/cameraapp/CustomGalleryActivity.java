@@ -21,6 +21,7 @@ public class CustomGalleryActivity extends AppCompatActivity {
     ViewPager viewPager;
     ViewPagerAdapter viewPagerAdapter;
     private ImageButton buttonBack;
+    
 
 
     @Override
