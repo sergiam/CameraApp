@@ -72,10 +72,10 @@ public class MainActivity extends AppCompatActivity {
     private ImageReader imageReader;
     private File file;
     private static final int REQUEST_CAMERA_PERMISSION = 200;
-    private boolean mFlashSupported;
     private Handler mBackgroundHandler;
     private HandlerThread mBackgroundThread;
     private ImageButton closeAppButton;
+    private Button gallery;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +86,14 @@ public class MainActivity extends AppCompatActivity {
         textureView.setSurfaceTextureListener(textureListener);
         takePictureButton = (Button) findViewById(R.id.btnTake);
         closeAppButton = findViewById(R.id.closeApp);
+        gallery = findViewById(R.id.btnGallery);
+
+        gallery.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
         closeAppButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -142,6 +150,7 @@ public class MainActivity extends AppCompatActivity {
             cameraDevice = null;
         }
     };
+
     final CameraCaptureSession.CaptureCallback captureCallbackListener = new CameraCaptureSession.CaptureCallback() {
         @Override
         public void onCaptureCompleted(CameraCaptureSession session, CaptureRequest request, TotalCaptureResult result) {
@@ -193,9 +202,12 @@ public class MainActivity extends AppCompatActivity {
             final CaptureRequest.Builder captureBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE);
             captureBuilder.addTarget(reader.getSurface());
             captureBuilder.set(CaptureRequest.CONTROL_MODE, CameraMetadata.CONTROL_MODE_AUTO);
-            // Orientation
+            captureBuilder.set(CaptureRequest.FLASH_MODE,CaptureRequest.FLASH_MODE_TORCH);
+            //Orientacion
             int rotation = getWindowManager().getDefaultDisplay().getRotation();
             captureBuilder.set(CaptureRequest.JPEG_ORIENTATION, ORIENTATIONS.get(rotation));
+
+            //Nombre de la foto, para que no se repita y se almacene correctamente
             Date now = new Date();
             final File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)  + "/"+ new SimpleDateFormat("yyyyMMddHHmmss", Locale.ENGLISH).format(now) + ".jpg");
             System.out.println(file.getAbsolutePath());
@@ -220,8 +232,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
 
-
-
                 private void save(byte[] bytes) throws IOException {
                     OutputStream output = null;
                     try {
@@ -239,7 +249,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onCaptureCompleted(CameraCaptureSession session, CaptureRequest request, TotalCaptureResult result) {
                     super.onCaptureCompleted(session, request, result);
-                    Toast.makeText(MainActivity.this, "Saved:" + file, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Foto almacenada: " + file, Toast.LENGTH_SHORT).show();
                     createCameraPreview();
                 }
             };
@@ -273,18 +283,16 @@ public class MainActivity extends AppCompatActivity {
             cameraDevice.createCaptureSession(Arrays.asList(surface), new CameraCaptureSession.StateCallback() {
                 @Override
                 public void onConfigured(@NonNull CameraCaptureSession cameraCaptureSession) {
-                    //The camera is already closed
                     if (null == cameraDevice) {
                         return;
                     }
-                    // When the session is ready, we start displaying the preview.
                     cameraCaptureSessions = cameraCaptureSession;
                     updatePreview();
                 }
 
                 @Override
                 public void onConfigureFailed(@NonNull CameraCaptureSession cameraCaptureSession) {
-                    Toast.makeText(MainActivity.this, "Configuration change", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Configuracion cambiada", Toast.LENGTH_SHORT).show();
                 }
             }, null);
         } catch (CameraAccessException e) {
@@ -294,16 +302,14 @@ public class MainActivity extends AppCompatActivity {
 
     private void openCamera() {
         CameraManager manager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
-        Log.e(TAG, "is camera open");
         try {
-            System.out.println("caaaaaaaaaaaaaaaaaaa");
+            System.out.println("Camara abierta");
             System.out.println(Arrays.toString(manager.getCameraIdList()));
             cameraId = manager.getCameraIdList()[0];
             CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraId);
             StreamConfigurationMap map = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
             assert map != null;
             imageDimension = map.getOutputSizes(SurfaceTexture.class)[0];
-            // Add permission for camera and let user grant the permission
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CAMERA_PERMISSION);
                 return;
@@ -312,12 +318,11 @@ public class MainActivity extends AppCompatActivity {
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
-        Log.e(TAG, "openCamera X");
     }
 
     protected void updatePreview() {
         if (null == cameraDevice) {
-            Log.e(TAG, "updatePreview error, return");
+            Log.e(TAG, "No es posible abrir la cámara");
         }
         captureRequestBuilder.set(CaptureRequest.CONTROL_MODE, CameraMetadata.CONTROL_MODE_AUTO);
         try {
@@ -335,9 +340,7 @@ public class MainActivity extends AppCompatActivity {
                 .setCancelable(true)
                 .setPositiveButton(R.string.yes,
                 new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog,
-                                        int id) {
-                        // what to do if YES is tapped
+                    public void onClick(DialogInterface dialog, int id) {
                         if (null != cameraDevice) {
                             cameraDevice.close();
                             textureView.setVisibility(View.INVISIBLE);
@@ -354,15 +357,12 @@ public class MainActivity extends AppCompatActivity {
 
         .setNegativeButton(R.string.cancel,
                 new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog,
-                                        int id) {
-                        // code to do on NO tapped
+                    public void onClick(DialogInterface dialog, int id) {
                         dialog.cancel();
                     }
                 });
 
         AlertDialog alertDialog = alertDialogBuilder.create();
-
         alertDialog.show();
 
     }
@@ -373,7 +373,7 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == REQUEST_CAMERA_PERMISSION) {
             if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
                 // close the app
-                Toast.makeText(MainActivity.this, "Sorry!!!, you can't use this app without granting permission", Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, "Has de aceptar los permisos para poder utilizar la camara!", Toast.LENGTH_LONG).show();
                 finish();
             }
         }
