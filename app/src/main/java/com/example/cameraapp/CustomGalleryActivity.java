@@ -50,7 +50,6 @@ public class CustomGalleryActivity extends AppCompatActivity {
             for (int i = 0; i < listFile.length; i++) {
                 f.add(listFile[i].getAbsolutePath());
             }
-            System.out.println("niggerman");
         }
     }
 }

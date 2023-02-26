@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -8,60 +8,42 @@
     tools:context=".MainActivity"
     android:orientation="vertical">
 
+    <TextureView
+        android:id="@+id/texture"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <ImageButton
+        android:id="@+id/closeApp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        app:srcCompat="@android:drawable/ic_delete"
+        android:background="@android:color/transparent"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:orientation="horizontal">
 
-        <Space
+        <ImageButton
+            android:id="@+id/btnTake"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            app:srcCompat="@android:drawable/ic_menu_camera"
+            android:background="@android:color/transparent"/>
 
         <ImageButton
-            android:id="@+id/closeApp"
+            android:id="@+id/btnGallery"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:srcCompat="@android:drawable/ic_delete" />
+            android:layout_weight="1"
+            app:srcCompat="@android:drawable/ic_menu_gallery"
+            android:background="@android:color/transparent"/>
 
     </LinearLayout>
 
-    <TextureView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="14"
-        android:id="@+id/texture"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="horizontal"
-        android:id="@+id/ll"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp">
-
-        <Button
-            android:id="@+id/btnTake"
-            android:layout_width="29dp"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="5dp"
-            android:layout_weight="1"
-            android:backgroundTint="#ABB6BF"
-            android:text="Foto"
-            android:textColor="@color/black" />
-
-        <Button
-            android:id="@+id/btnGallery"
-            android:layout_width="29dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_weight="1"
-            android:backgroundTint="#ABB6BF"
-            android:text="Galeria"
-            android:textColor="@color/black" />
-
-    </LinearLayout>
-
-</LinearLayout>
+</RelativeLayout>
 
